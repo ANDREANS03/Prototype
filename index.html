@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andreans Game Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :root {
+            --yellow: #FFD700;
+            --dark: #0A1D37;
+            --grey: #f4f4f4;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            background-color: #121212;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 450px;
+            background: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Navigasi Halaman */
+        .page { 
+            display: none; 
+            flex-direction: column; 
+            min-height: 100%; 
+            overflow-y: auto;
+            padding-bottom: 80px; 
+        }
+
+        .page.active { display: flex; }
+
+        #main-nav { display: none; }
+
+        /* --- STYLING LOGIN --- */
+        #login-page {
+            background: var(--yellow);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .logo {
+            width: 200px;
+            margin-bottom: 5px;
+            display: block;
+            margin: 0 auto 15px auto;
+        }
+
+        .login-box {
+            background: white;
+            text-align: left;
+            padding: 30px 20px;
+            border-radius: 20px;
+            width: 80%;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+
+        .ri-search-line { transition: 0.3s; }
+
+        .searchInput {
+            width: 0;
+            opacity: 0;
+            padding: 5px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            transition: 0.3s;
+            font-size: 12px;
+        }
+
+        .searchInput.active {
+            width: 100px;
+            opacity: 1;
+            margin-right: 10px;
+        }
+
+        .hide-icon {
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+
+        .btn-main {
+            background: var(--dark);
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* --- STYLING HOME PAGE --- */
+        header {
+            background: #1e3a5f;
+            color: #FFD700;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .title span { color: #f5c400; }
+        .logo-header { width: 100px;}
+
+        .promo-banner {
+            margin: 15px;
+            height: 200px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 15px;
+        }
+
+        .game-card {
+            background: #1e3a5f;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            cursor: pointer;
+            border: 1px solid #eee;
+            text-align: center;
+        }
+
+        .game-card img {
+            width: 90%;
+            height: 200px;
+            object-fit: contain;
+        }
+
+        .game-card p {
+            font-size: 15px;
+            font-weight: bold;
+            margin: 8px 0;
+            color: #FFD700;
+        }
+
+        /* --- STYLING TOP UP (MLBB) --- */
+        .section-title {
+            font-size: 14px;
+            font-weight: bold;
+            padding: 10px 15px;
+            background: #123b63;
+            color: #FFD700;
+        }
+
+        .item-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 15px;
+        }
+
+        .item-card {
+            border: 2px solid #eee;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex; 
+            align-items: center; 
+            gap: 10px;    
+        }
+
+        .item-img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .item-card.active {
+            border-color: var(--yellow);
+            background: #fffdf0;
+        }
+
+        /* --- STYLING LEADERBOARD PAGE --- */
+        .leaderboard-header {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .leaderboard-header h1 {
+            text-align: left;
+            color: #e0a800;
+            margin: 0;
+        }
+
+        .leaderboard-header h2 {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .leaderboard-header p {
+            font-size: 15px;
+            color: #444;
+        }
+
+        .lb-label {
+            background: #123b63;
+            color: #ffd700;
+            display: inline-block;
+            width: fit-content;
+            padding: 6px 12px;
+            border-radius: 10px 10px 0 0;
+            margin: 10px 0 0 15px;
+        }
+
+        .lb-card {
+            background: #123b63;
+            margin: 0 15px 20px;
+            border-radius: 0 10px 10px 10px;
+            padding: 10px;
+            color: #ffd700;
+        }
+
+        .lb-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-weight: bold;
+        }
+
+        /* --- STYLING PROFILE PAGE --- */
+        .top-header {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:15px;
+        }
+
+        .top-header h2 {
+            margin:0;
+            font-size:18px;
+        }
+
+        .top-header h2 span {
+            color:#f5c400;
+        }
+
+        .top-header .right {
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+
+        .avatar {
+            width:40px;
+            border-radius:50%;
+            position: relative;
+            z-index: 2; /* biar di atas */
+            cursor: pointer;
+        }
+
+        .user-card {
+            background:#163d66;
+            color:white;
+            margin:15px;
+            padding:15px;
+            border-radius:15px;
+        }
+
+        .user-top {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+        }
+
+        .user-top img {
+            width:50px;
+            border-radius:50%;
+        }
+
+        .user-top h3 {
+            margin:0;
+            font-size:16px;
+        }
+
+        .user-top span {
+            color:#f5c400;
+            font-weight:bold;
+        }
+
+        .divider {
+            height:1px;
+            background:#ccc;
+            margin:10px 0;
+        }
+
+        .phone {
+            display:flex;
+            align-items:center;
+            gap:10px;
+            color:#f5c400;
+        }
+
+        .section-title2 {
+            padding:0 15px;
+            margin-top:10px;
+        }
+
+        .total-card {
+            background:#163d66;
+            margin:15px;
+            border-radius:15px;
+            text-align:center;
+            padding:20px;
+            color:#f5c400;
+        }
+
+        .total-card h1 {
+            margin:0;
+            font-size:40px;
+        }
+
+        .status-grid {
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:15px;
+            padding:15px;
+        }
+
+        .box {
+            border-radius:15px;
+            text-align:center;
+            padding:20px;
+        }
+
+        .box h1 {
+            margin:0;
+            font-size:30px;
+        }
+
+        .yellow { background:#ffe600; }
+        .blue { background:#1e88e5; color:white; }
+        .green { background:#00e600; }
+        .red { background:#ff1a1a; color:white; }
+        
+
+        /* MODAL QRIS */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .modal {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            width: 280px;
+        }
+
+        .qr-img { width: 100%; max-width: 200px; }
+
+        footer {
+            margin-top: auto;
+            padding: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* BOTTOM NAVIGATION BAR */
+        .table-container { padding: 15px; overflow-x: auto; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #1e1e1e;
+            color: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        th { background: #2a2a2a; }
+        tr { border-bottom: 1px solid #444; }
+
+        .status-success { color: #00e676; }
+        .status-pending { color: #ffea00; }
+        .status-failed  { color: #ff5252; }
+
+        /* BOTTOM NAVIGATION BAR */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 450px;
+            background: #f5c400;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 5px 0;
+            z-index: 100;
+        }
+
+        .nav-item {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .nav-item i {
+            font-size: 24px;
+        }
+
+        .nav-item.active {
+            background: white;
+            color: #f5c400;
+            border-radius: 50%;
+            transform: translateY(-20px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+        }
+
+        .menu-bar {
+            background: #1e3a5f;
+            border-radius: 50px;
+            padding: 5px 10px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        .menu-item {
+            color: #FFD700;
+            padding: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+            padding-bottom: 8px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .menu-item.active::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #FFD700;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- LOGIN PAGE -->
+        <div id="login-page" class="page active">
+            <div class="login-box">
+                <img src="Logo baru Andreans Store.png" class="logo">
+                <p>Masuk dengan akun yang telah kamu daftarkan</p>
+                <label>Username</label>
+                <input type="text" placeholder="Username">
+                <label>Kata Sandi</label>
+                <input type="password" placeholder="Password">
+                <button class="btn-main" onclick="goToPage('home-page')">MASUK</button>
+            </div>
+        </div>
+
+        <!-- HOME PAGE -->
+        <div id="home-page" class="page">
+            <header class="header">
+                <div class="left">
+                    <img src="Logo.png" class="logo-header">
+                    <h1 class="title">Andreans <span>Game Store</span></h1>
+                </div>
+                <div class="right">
+                    <input type="text" class="searchInput" placeholder="Cari game..." onkeyup="searchGame(this)">
+                    <i class="ri-search-line" onclick="toggleSearch(this)"></i>
+                </div>
+            </header>
+            <img src="Banner.png" class="promo-banner">
+            <div class="menu-bar">
+                <div class="menu-item active" data-filter="all">All</div>
+                <div class="menu-item" data-filter="topup">Top Up Games</div>
+                <div class="menu-item" data-filter="pulsa">Pulsa & Data</div>
+                <div class="menu-item" data-filter="voucher">Voucher</div>
+            </div>
+            <div class="section-title">PILIH GAME</div>
+            <div class="game-grid">
+                <div class="game-card" data-category="topup" onclick="goToPage('topup-page')">
+                    <img src="MLBB.webp" alt="ML">
+                    <p>Mobile Legends</p>
+                    <p>Moonton</p>
+                </div>
+                <div class="game-card" data-category="topup">
+                    <img src="PUBG.png" alt="PUBG">
+                    <p>PUBG Mobile</p>
+                    <p>Tencent Games</p>
+                </div>
+                <div class="game-card" data-category="topup">
+                    <img src="Delta.jpeg" alt="DF">
+                    <p>Delta Force</p>
+                    <p>Garena</p>
+                </div>
+                <div class="game-card" data-category="topup"> 
+                    <img src="HOK.jpeg" alt="HOK">
+                    <p>Honor of Kings</p>
+                    <p>Tencent Games</p>
+                </div>
+                <div class="game-card" data-category="topup">
+                    <img src="haikyu.jpeg" alt="HK">
+                    <p>Haikyu</p>
+                    <p>Garena International II</p>
+                </div>
+                <div class="game-card" data-category="topup">
+                    <img src="Racing master.jpeg" alt="RM">
+                    <p>Racing Master</p>
+                    <p>Exptional Global</p>
+                </div>
+                <div class="game-card" data-category="topup">
+                    <img src="Roblox.jpeg" alt="RB">
+                    <p>Roblox</p>
+                    <p>Roblox Corporation</p>
+                </div>
+                <div class="game-card" data-category="topup">
+                    <img src="Free fire.jpeg" alt="FF">
+                    <p>Free fire</p>
+                    <p>Garena</p>
+                </div>
+                <div class="game-card" data-category="topup">
+                    <img src="COD.jpeg" alt="COD">
+                    <p>Call Of Duty</p>
+                    <p>Garena</p>
+                </div>
+                <div class="game-card" data-category="topup">
+                    <img src="Point Blank.jpeg" alt="PB">
+                    <p>Point blank</p>
+                    <p>Zepetto</p>
+                </div>
+                <div class="game-card" data-category="topup">
+                    <img src="Valo.jpeg" alt="VL">
+                    <p>Valorant</p>
+                    <p>Riot Games</p>
+                </div>
+                <div class="game-card" data-category="topup">
+                    <img src="Genshin.jpeg" alt="GS">
+                    <p>Genshin Impact</p>
+                    <p>Mihoyo</p>
+                </div>
+                <div class="game-card" data-category="pulsa">
+                    <img src="Axis.jpeg" alt="AX">
+                    <p>Axis</p>
+                    <p>PT XL Axiata Tbk</p>
+                </div>
+                <div class="game-card" data-category="pulsa">
+                    <img src="indosat.jpeg" alt="ID">
+                    <p>Indosat</p>
+                    <p>PT Indosat Tbk</p>
+                </div>
+                <div class="game-card" data-category="pulsa">
+                    <img src="smartfren.jpeg" alt="SM">
+                    <p>smartfren</p>
+                    <p>PT smartfren Telecom Tbk</p>
+                </div>
+                <div class="game-card" data-category="pulsa">
+                    <img src="telkom.jpeg" alt="TK">
+                    <p>Telkomsel</p>
+                    <p>PT Telekomunikasi Indonesia</p>
+                </div>
+                <div class="game-card" data-category="pulsa">
+                    <img src="Three.jpeg" alt="TH">
+                    <p>Three</p>
+                    <p>PT Indosat Tbk</p>
+                </div>
+                <div class="game-card" data-category="pulsa">
+                    <img src="XL.jpeg" alt="XL">
+                    <p>XL</p>
+                    <p>PT XL Axiata Tbk</p>
+                </div>
+                <div class="game-card" data-category="voucher">
+                    <img src="nintendo.webp" alt="">
+                    <p>Nintendo Eshop</p>
+                    <p>Nintendo</p>
+                </div>
+                <div class="game-card" data-category="voucher">
+                    <img src="Play store.jpeg" alt="">
+                    <p>Google Play Voucher</p>
+                    <p>Google</p>
+                </div>
+                <div class="game-card" data-category="voucher">
+                    <img src="PS.webp" alt="">
+                    <p>Play Station</p>
+                    <p>Sony Interactive Entertainment</p>
+                </div>
+                <div class="game-card" data-category="voucher">
+                    <img src="Riot.webp" alt="">
+                    <p>Riot Pins</p>
+                    <p>Riot Games</p>
+                </div>
+                <div class="game-card" data-category="voucher">
+                    <img src="Steam.webp" alt="">
+                    <p>Steam Wallet</p>
+                    <p>Valve</p>
+                </div>
+                <div class="game-card" data-category="voucher">
+                    <img src="X-box.webp" alt="">
+                    <p>Xbox</p>
+                    <p>Microsoft</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- GAME PAGE -->
+        <div id="game-page" class="page">
+    
+            <header class="header">
+                <div class="left">
+                    <img src="Logo.png" class="logo-header">
+                    <h1 class="title">Andreans <span>Game Store</span></h1>
+                </div>
+                <div class="right">
+                    <input type="text" class="searchInput" placeholder="Cari game..." onkeyup="searchGame(this)">
+                    <i class="ri-search-line" onclick="toggleSearch(this)"></i>
+                </div>
+            </header>
+
+            <div class="game-grid">
+                <div class="game-card" data-category="topup" onclick="goToPage('topup-page')">
+                    <img src="MLBB.webp" alt="ML">
+                    <p>Mobile Legends</p>
+                    <p>Moonton</p>
+                </div>
+                <div class="game-card" data-category="topup">
+                    <img src="PUBG.png" alt="PUBG">
+                    <p>PUBG Mobile</p>
+                    <p>Tencent Games</p>
+                </div>
+                <div class="game-card" data-category="topup">
+                    <img src="Delta.jpeg" alt="DF">
+                    <p>Delta Force</p>
+                    <p>Garena</p>
+                </div>
+                <div class="game-card" data-category="topup"> 
+                    <img src="HOK.jpeg" alt="HOK">
+                    <p>Honor of Kings</p>
+                    <p>Tencent Games</p>
+                </div>
+                <div class="game-card" data-category="topup">
+                    <img src="haikyu.jpeg" alt="HK">
+                    <p>Haikyu</p>
+                    <p>Garena International II</p>
+                </div>
+                <div class="game-card" data-category="topup">
+                    <img src="Racing master.jpeg" alt="RM">
+                    <p>Racing Master</p>
+                    <p>Exptional Global</p>
+                </div>
+                <div class="game-card" data-category="topup">
+                    <img src="Roblox.jpeg" alt="RB">
+                    <p>Roblox</p>
+                    <p>Roblox Corporation</p>
+                </div>
+                <div class="game-card" data-category="topup">
+                    <img src="Free fire.jpeg" alt="FF">
+                    <p>Free fire</p>
+                    <p>Garena</p>
+                </div>
+                <div class="game-card" data-category="topup">
+                    <img src="COD.jpeg" alt="COD">
+                    <p>Call Of Duty</p>
+                    <p>Garena</p>
+                </div>
+                <div class="game-card" data-category="topup">
+                    <img src="Point Blank.jpeg" alt="PB">
+                    <p>Point blank</p>
+                    <p>Zepetto</p>
+                </div>
+                <div class="game-card" data-category="topup">
+                    <img src="Valo.jpeg" alt="VL">
+                    <p>Valorant</p>
+                    <p>Riot Games</p>
+                </div>
+                <div class="game-card" data-category="topup">
+                    <img src="Genshin.jpeg" alt="GS">
+                    <p>Genshin Impact</p>
+                    <p>Mihoyo</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- LEADERBOARD PAGE -->
+        <div id="leaderboard-page" class="page">
+            <div class="leaderboard-header">
+                <h1>Leaderboard</h1>
+                <h2>Top 10 Pembelian Terbanyak<br>di Andreans Game Store</h2>
+                <p>
+                    Berikut ini adalah daftar 10 pembelian terbanyak yang dilakukan oleh pelanggan kami.
+                </p>
+            </div>
+
+            <div class="lb-label">Top 10 - Hari ini</div>
+            <div class="lb-card">
+                <div class="lb-row"><span>1. Aldean Tegar</span><span>Rp. 2.150.000</span></div>
+                <div class="lb-row"><span>2. Nastasia Adeline</span><span>Rp. 1.550.000</span></div>
+                <div class="lb-row"><span>3. Ade</span><span>Rp. 1.500.000</span></div>
+                <div class="lb-row"><span>4. Mada</span><span>Rp. 1.050.000</span></div>
+                <div class="lb-row"><span>5. Hamdan</span><span>Rp. 1.050.000</span></div>
+                <div class="lb-row"><span>6. Dori</span><span>Rp. 1.000.000</span></div>
+                <div class="lb-row"><span>7. Sisil</span><span>Rp. 950.000</span></div>
+                <div class="lb-row"><span>8. Kitty</span><span>Rp. 850.000</span></div>
+                <div class="lb-row"><span>9. Cendy</span><span>Rp. 800.000</span></div>
+                <div class="lb-row"><span>10. Aninditha</span><span>Rp. 750.000</span></div>
+            </div>
+
+            <div class="lb-label">Top 10 - Minggu ini</div>
+            <div class="lb-card">
+                <div class="lb-row"><span>1. Arap</span><span>Rp. 2.150.000</span></div>
+                <div class="lb-row"><span>2. Bravy</span><span>Rp. 1.550.000</span></div>
+                <div class="lb-row"><span>3. Tepe</span><span>Rp. 1.500.000</span></div>
+                <div class="lb-row"><span>4. Aloy</span><span>Rp. 1.050.000</span></div>
+                <div class="lb-row"><span>5. Jot</span><span>Rp. 1.050.000</span></div>
+                <div class="lb-row"><span>6. Yuka</span><span>Rp. 1.000.000</span></div>
+                <div class="lb-row"><span>7. Garry</span><span>Rp. 950.000</span></div>
+                <div class="lb-row"><span>8. Ibot</span><span>Rp. 850.000</span></div>
+                <div class="lb-row"><span>9. Niko</span><span>Rp. 800.000</span></div>
+                <div class="lb-row"><span>10. Glhfson</span><span>Rp. 750.000</span></div>
+            </div>
+        </div>
+
+        <!-- PROFILE PAGE  -->
+        <div id="profile-page" class="page">
+    
+            <div class="top-header">
+                <div class="left">
+                    <img src="Logo.png" class="logo-header">
+                    <h2>Andreans <span>Game Store</span></h2>
+                </div>
+                <div class="right">
+                    <i class="ri-search-line"></i>
+                    <img src="https://i.pravatar.cc/40" class="avatar">
+                </div>
+            </div>
+
+            <div class="user-card">
+                <div class="user-top">
+                    <img src="https://i.pravatar.cc/60">
+                    <div>
+                        <h3>Aldora Novrizal Nitimanta</h3>
+                        <span>Member</span>
+                    </div>
+                    <i class="ri-settings-3-line"></i>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="phone">
+                    <i class="ri-phone-line"></i>
+                    <span>+62 812345678</span>
+                </div>
+            </div>
+
+            <h3 class="section-title2">Transaksi hari ini</h3>
+
+            <div class="total-card">
+                <h1>0</h1>
+                <p>Total Transaksi</p>
+            </div>
+
+            <div class="status-grid">
+                <div class="box yellow">
+                    <h1>0</h1>
+                    <p>Menunggu</p>
+                </div>
+                <div class="box blue">
+                    <h1>0</h1>
+                    <p>Dalam Proses</p>
+                </div>
+                <div class="box green">
+                    <h1>0</h1>
+                    <p>Sukses</p>
+                </div>
+                <div class="box red">
+                    <h1>0</h1>
+                    <p>Gagal</p>
+                </div>
+            </div>
+
+            <h3 class="section-title2">Riwayat Transaksi Terbaru Hari Ini</h3>
+
+            <div class="table-container">
+                <table id="trx-table">
+                    <thead>
+                        <tr>
+                            <th>Nomor Invoice</th>
+                            <th>ID Trx</th>
+                            <th>Item</th>
+                            <th>User Input</th>
+                            <th>Harga</th>
+                            <th>Tanggal</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="bottom-nav" id="main-nav">
+            <div class="nav-item active" onclick="setNav(this, 'home-page')">
+                <i class="ri-home-line"></i>
+            </div>
+            <div class="nav-item" onclick="setNav(this, 'game-page')">
+                <i class="ri-gamepad-line"></i>
+            </div>
+            <div class="nav-item" onclick="setNav(this, 'leaderboard-page')">
+                <i class="ri-bar-chart-line"></i>
+            </div>
+            <div class="nav-item" onclick="setNav(this, 'profile-page')">
+                <i class="ri-user-line"></i>
+            </div>
+        </div>
+    
+        <!-- TOP UP PAGE -->
+        <div id="topup-page" class="page">
+            <header>
+                <span onclick="goToPage('home-page')" style="cursor:pointer">⬅ Kembali</span>
+                <span>TOP UP MLBB</span>
+            </header>
+
+            <div style="background:#1e3a5f; margin:15px; border-radius:20px; padding:15px; color:#FFD700;">
+        
+                <div style="display:flex; gap:15px; align-items:center;">
+                    <img src="MLBB.webp" style="width:100px; border-radius:15px;">
+            
+                    <div>
+                        <h2 style="margin:0; font-size:20px;">MOBILE LEGENDS</h2>
+                        <p style="margin:5px 0 0 0;">Moonton</p>
+                    </div>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; margin-top:15px; font-size:14px;">
+                    <span>Proses Cepat</span>
+                    <span>Layanan Chat 24/7</span>
+                    <span>Pembayaran Aman</span>
+                </div>
+            </div>
+            
+            <div class="section-title">1. Masukkan Data Akun</div>
+            <div style="padding:5px; display:flex;">
+                <input type="number" id="uid" placeholder="Masukkan ID">
+                <input type="number" id="zid" placeholder="Masukkan" style="width:120px;">
+            </div>
+
+            <div class="section-title">2. Pilih Nominal</div>
+            <div class="item-grid">
+                <div class="item-card" onclick="setNominal(this, '36 Diamonds', 10000)">
+                    <img src="11 DM.png" class="item-img">
+                    <div>
+                        <strong>36 Diamonds</strong><br>
+                        <span>Rp 10.000</span>
+                    </div>
+                </div>
+                <div class="item-card" onclick="setNominal(this, '67 Diamonds', 10000)">
+                    <img src="11 DM.png" class="item-img">
+                    <div>
+                        <strong>67 Diamonds</strong><br>
+                        <span>Rp 20.000</span>
+                    </div>
+                </div>
+                <div class="item-card" onclick="setNominal(this, '148 Diamonds', 40000)">
+                    <img src="150 DM.png" class="item-img">
+                    <div>
+                        <strong>148 Diamonds</strong><br>
+                        <span>Rp 40.000</span>
+                    </div>
+                </div>
+                <div class="item-card" onclick="setNominal(this, '240 Diamonds', 65000)">
+                    <img src="150 DM.png" class="item-img">
+                    <div>
+                        <strong>240 Diamonds</strong><br>
+                        <span>Rp 65.000</span>
+                    </div>
+                </div>
+                <div class="item-card" onclick="setNominal(this, '370 Diamonds', 100000)">
+                    <img src="250 DM.png" class="item-img">
+                    <div>
+                        <strong>370 Diamonds</strong><br>
+                        <span>Rp 100.000</span>
+                    </div>
+                </div>
+                <div class="item-card" onclick="setNominal(this, '568 Diamonds', 150000)">
+                    <img src="250 DM.png" class="item-img">
+                    <div>
+                        <strong>568 Diamonds</strong><br>
+                        <span>Rp 150.000</span>
+                    </div>
+                </div>
+                <div class="item-card" onclick="setNominal(this, '966 Diamonds', 250000)">
+                    <img src="1000 DM.png" class="item-img">
+                    <div>
+                        <strong>966 Diamonds</strong><br>
+                        <span>Rp 250.000</span>
+                    </div>
+                </div>
+                <div class="item-card" onclick="setNominal(this, '1704 Diamonds', 450000)">
+                    <img src="1000 DM.png" class="item-img">
+                    <div>
+                        <strong>1704 Diamonds</strong><br>
+                        <span>Rp 450.000</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">3. Pilih Pembayaran</div>
+            <div style="padding:15px; display:flex; flex-direction:column; gap:10px;">
+                <div class="pay-method active" onclick="setPayment('qris', this)" 
+                    style="border:2px solid #2563eb; padding:10px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; background:#f0f7ff;">
+                    <span>QRIS</span>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_QRIS.svg" width="40">
+                </div>
+                <div class="pay-method" onclick="setPayment('bri', this)"
+                    style="border:2px solid #eee; padding:10px; border-radius:8px;">
+                    Transfer Bank BRI
+                </div>
+            </div>
+
+            <footer>
+                <div>
+                    <small>Total:</small><br>
+                    <strong id="total-txt" style="color:red">Rp 0</strong>
+                </div>
+                <button class="btn-main" style="width:150px" onclick="prosesBayar()">BELI SEKARANG</button>
+            </footer>
+        </div>
+    </div>
+
+    <div class="overlay" id="qr-modal">
+        <div class="modal">
+            <h3>SCAN UNTUK BAYAR</h3>
+            <p id="order-info" style="font-size: 12px; color: #666;"></p>
+            <img src="Qris.jpeg" class="qr-img">
+            <button class="btn-main" onclick="closeModal()">Selesai / Tutup</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedItem = "";
+        let selectedPrice = 0;
+        let activeFilter = "all";
+        let searchKeyword = "";
+
+        // Fungsi pindah halaman
+        function goToPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+
+            let nav = document.getElementById('main-nav');
+
+            if (pageId === 'login-page' || pageId === 'topup-page') {
+                nav.style.display = 'none';
+            } else {
+                nav.style.display = 'flex';
+            }
+
+            window.scrollTo(0,0);
+        }
+
+        // Fungsi pilih nominal
+        function setNominal(el, name, price) {
+            document.querySelectorAll('.item-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            selectedItem = name;
+            selectedPrice = price;
+            document.getElementById('total-txt').innerText = "Rp " + price.toLocaleString('id-ID');
+        }
+        
+        // pilih metode
+        let paymentMethod = "qris";
+
+        function setPayment(method, el) {
+            paymentMethod = method;
+
+            document.querySelectorAll('.pay-method').forEach(p => {
+                p.classList.remove('active');
+                p.style.border = "2px solid #eee";
+                p.style.background = "white";
+            });
+
+            el.classList.add('active');
+            el.style.border = "2px solid #2563eb";
+            el.style.background = "#f0f7ff";
+        }
+        
+        // Fungsi bayar
+        function prosesBayar() {
+            let u = document.getElementById('uid').value;
+            let z = document.getElementById('zid').value;
+            
+            if(!u || !z || selectedPrice === 0) {
+                alert("Isi ID Akun dan pilih nominal dulu, Bos!");
+                return;
+            }
+
+            let trxId = "B2F" + Math.floor(Math.random() * 1000000);
+
+            let info = `${selectedItem}
+        ID: ${u} (${z})
+        Total: Rp ${selectedPrice.toLocaleString('id-ID')}
+        Metode: ${paymentMethod.toUpperCase()}
+        Kode: ${trxId}`; 
+            
+            addHistoryTable( trxId, selectedItem, u + "(" + z + ")", selectedPrice, "Sukses" );
+
+            document.getElementById('order-info').innerText = info;
+
+            if (paymentMethod === "qris") {
+                document.querySelector('.qr-img').src = "Qris.jpeg";
+
+                document.getElementById('qr-modal').style.display = 'flex';
+            } else if (paymentMethod === "bri") {
+                alert( 
+        `Transfer ke BRI
+        No Rekening: 1234567890
+        Atas Nama: Andreans Store
+
+        Total: Rp ${selectedPrice.toLocaleString('id-ID')}
+        Kode: ${trxId}`
+                );
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('qr-modal').style.display = 'none'; 
+        }
+        
+        function setNav(el, pageId) {
+            if(pageId){
+                goToPage(pageId);
+            }
+
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+
+                let icon = item.querySelector('i');
+                if (icon) {
+                    icon.className = icon.className.replace('-fill', '-line');
+                }
+            });
+
+            el.classList.add('active');
+
+            let icon = el.querySelector('i');
+            if (icon) {
+                icon.className = icon.className.replace('-line', '-fill');
+            }
+        }
+
+        function addHistoryTable(trxId, item, userInput, price, status) {
+            const table = document.querySelector("#trx-table tbody");
+
+            const date = new Date().toLocaleString('id-ID');
+
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>INV-${trxId}</td>
+                <td>${trxId}</td>
+                <td>${item}</td>
+                <td>${userInput}</td>
+                <td>Rp ${price.toLocaleString('id-ID')}</td>
+                <td>${date}</td>
+                <td class="status-${status}">${status.toUpperCase()}</td>
+            `;
+            table.prepend(row);
+        }
+
+        function toggleSearch(el) {
+            let input = el.parentElement.querySelector('.searchInput');
+            input.classList.toggle('active');
+
+            if (input.classList.contains('active')) {
+                input.focus();
+            } else {
+                input.value = "";
+                searchGame(input); // reset
+            }
+        }
+
+        function applyFilterAndSearch() {
+            let page = document.querySelector('.page.active');
+            let cards = page.querySelectorAll('.game-card');
+
+            cards.forEach(card => {
+                let name = card.querySelector('p').innerText.toLowerCase();
+                let category = card.dataset.category || "";
+
+                let matchFilter = (activeFilter === "all") || (!category) || (category === activeFilter);
+                let matchSearch = name.includes(searchKeyword);
+
+                if (matchFilter && matchSearch) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+
+        function searchGame(inputEl) {
+            searchKeyword = inputEl.value.toLowerCase().trim();
+            applyFilterAndSearch(inputEl);
+        }
+
+        function resetSearch() {
+            searchKeyword = "";
+
+    
+            document.querySelectorAll('.searchInput').forEach(input => {
+                input.value = "";
+                input.classList.remove('active');
+            });
+
+            applyFilterAndSearch(); // tampilkan ulang sesuai filter
+        }
+
+        document.addEventListener('click', function(e) {
+            let isSearch = e.target.closest('.searchInput');
+            let isIcon = e.target.closest('.ri-search-line');
+
+            if (!isSearch && !isIcon) {
+                resetSearch(); // klik luar → reset
+            }
+        });
+
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function() {
+
+                document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+
+                activeFilter = this.dataset.filter;
+
+                applyFilterAndSearch();
+            });
+        });
+
+
+        // function setNav(el) {
+        //     document.querySelectorAll('.nav-item').forEach(item => {
+        //         item.classList.remove('active');
+        //     });
+        //     el.classList.add('active');
+        // }
+
+    </script>
+</body>
+</html>
